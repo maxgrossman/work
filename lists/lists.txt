@@ -1,0 +1,51 @@
+Definition: contiguous area of memory made of equal sized elements indexed by
+contiguous integers
+
+[1,2,3,4]
+- 4*(4bytes) of memory
+- indexed 0-4
+
+Advantages
+
+- reading elements is 'constant time', theta of (1).
+- writing to an element is theta of (1)
+- adding and removing to the end is theta of (1) considering we keep track
+of the end of the list
+- adding and removing at beginning or middle is l(n) since we have to also move
+  the other elements
+
+Dynamic (Resizable) Arrays
+
+Arrays where array lengths are not static.
+Achieve this by storing a pointer to dynamicall allocated array,
+relaiching it with newly-allocated array as needed.
+
+Dynamic arrays' minimum form
+
+methods
+- Get(i) -> return element at location i*; theta(1);
+- Set(i, val) -> sets element i to val*; theta(1);
+- PushBack(val) -> Adds val to the end of the array; omega(1); O(n)
+- Remove(i) -> removes element at location i; O(n)
+- Size() -> tells how many elements are in the array
+properties
+- capacity -- how large it can be
+- size -- how much of that capacity we are using now
+
+arr = [ | ] capacity 2, size 0
+arr.PushBack(a); arr = [a | ] capacity 2, size 2
+arr.PushBack(b); arr = [a |b ] capacity2, size 2
+arr.PushBack(c); arr = [  |  |  |  ], arr = [a|b|c| ] size=4;capacity=3
+
+
+appending can be order(n), mostly time contant;
+some space is wasted with dynamic arrays
+
+Jagged Arrays, an array of arrays.
+
+int[][] ml = new int[4][];
+ml[0] = new int[6];
+ml[1] = new int[4];
+ml[2] = new int[4];
+ml[3] = new int[5];
+

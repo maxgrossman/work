@@ -1,0 +1,38 @@
+- nodes with pointers to other nodes except the last. it points to nothing
+
+- Node structure
+- .key = the value in the node
+- .pointer = pointer to the next node
+
+LinkedList API
+- PushFront(Key) -> adds element tot he front of the list
+    - this fool is O(1), just make head pointer point tot
+      the new Node which points to the once pointed to in head
+      Node...
+- Key TopFront() -> gives front element
+    - O(1)
+- PopFront() -> remove the front item
+    - O(1), update head pointer, remove old node
+- PushBack(Key) -> add key to the back of the list
+    - O(n) with no tail pointer
+    - O(1) with tail pointer
+- Key TopBack() -> return the back item
+    - O(n) with no tail,
+    - O(1) with tail pointer
+- PopBack() -> Remove the back item
+    - O(n)
+- Boolean Find(Key) -> is key in the list
+    - O(n)
+- Erase(Key) -> remove the match
+    - O(n)
+- Empty() -> empty list?
+    - O(1)
+- AddBefore(Node, Key) -> adds key before Node
+    - O(n)
+- AddAfter(Node, Key) -> adds key after Node
+    - O(1)
+
+it is a recursive data type (its definition refers to itself)
+advantagous for inserting item at given place in list if you have
+reference to the previous node, and you can just kep growing your list until the memory on your computer runs out
+
