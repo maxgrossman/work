@@ -1,4 +1,4 @@
-#include "vector.h"
+#include "../include/dyanmic_array.h"
 
 static const int START_CAPACITY = 2;
 /**
@@ -8,7 +8,7 @@ static const int START_CAPACITY = 2;
 DynamicArrayJustInt::DynamicArrayJustInt() {
     capacity = START_CAPACITY;
     size = 0;
-    mutable_array = new int[capacity];
+    mutable_array = new int[capacity]{ 0 };
 }
 /**
  * removes element at index i
@@ -18,9 +18,8 @@ void DynamicArrayJustInt::delete_at(int i) {
     int *next_array = new int[capacity];
     int *next_ptr = next_array;          // ptr at beginning of next_array
     int *end = mutable_array + size;     // ptr to end of mutable_array
-    int remove_value = mutable_array[i]; // value in mutable array to remove
     for (int *mutable_ptr = mutable_array; mutable_ptr < end; ++mutable_ptr) {
-        if (*mutable_ptr != remove_value) { // so long as not the remove_value, cp over.
+        if ((mutable_ptr - mutable_array) != i) { // really only remove at index i :).
             *next_ptr = *mutable_ptr; // this copies over the value
             next_ptr++; // this increments the next pointer;
         }
@@ -41,6 +40,7 @@ int DynamicArrayJustInt::find(int value) {
         if (*mutable_ptr == value) {
             return mutable_ptr - mutable_array;
         }
+        mutable_ptr++;
     }
     return -1;
 }
@@ -59,7 +59,16 @@ int DynamicArrayJustInt::get(int i) {
  * @return current size of the array
  */
 int DynamicArrayJustInt::get_size() { return size; }
+/**
+ * inserts value at index i
+ * @param {int} i the index to insert at
+ * @param {int} value the value to insert at i
+ */
 void DynamicArrayJustInt::insert(int i, int value) {
+    if (i < 0 || i > size) {
+        throw "provided i is out of range";
+    }
+
     // if inserting makes size === capacity, insert into new array
     // otherwise, just the plain jane mutable_array
     bool need_new_array = capacity == (size + 1);
@@ -100,9 +109,9 @@ int DynamicArrayJustInt::pop(int i) {
     int pop_value;
 
     for (int *mutable_ptr = mutable_array; mutable_ptr < end; mutable_ptr++) {
-        if ((mutable_ptr - mutable_array) == i){
+        if ((mutable_ptr - mutable_array) == i) { // if ptr math == index, set it to pop
             pop_value = *mutable_ptr;
-        } else {
+        } else { // otherwise copy over.
             *next_ptr = *mutable_ptr;
         }
     }
@@ -123,22 +132,27 @@ void DynamicArrayJustInt::pushback(int value) {
     size++;
 }
 /**
- * removes value from lisf t
+ * removes first instance of value from array
  */
 void DynamicArrayJustInt::remove(int value) {
     int *next_array = new int[capacity];
     int *next_ptr = next_array;
     int *end = mutable_array + size;
+    bool removed = false;
 
     for (int *mutable_ptr = mutable_array; mutable_ptr < end; ++mutable_ptr) {
-        if (*mutable_ptr != value) {
+        if (*mutable_ptr != value || removed) { // don't match or we already matched, copy over.
             *next_ptr = *mutable_ptr;
             next_ptr++;
+        } else { // match first time, flip this to true
+            removed = true;
         }
     }
     delete[] mutable_array;
     mutable_array = next_array;
-    size--;
+    if (removed) { // be smart, only decrement 1 if we found the value in the array
+        size--;
+    }
 }
 /**
  * resizes array to have 2x capacity
