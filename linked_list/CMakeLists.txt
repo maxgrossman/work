@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.10)
+project(linked_lists)
+include_directories(include)
+file(GLOB SOURCES "src/*.cpp")
+set(CMAKE_CXX_FLAGS_DEBUG_INIT "-Wall")
+add_executable(test ${SOURCES})
