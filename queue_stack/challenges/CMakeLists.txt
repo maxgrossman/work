@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.10)
+project(queue_stack_challenges)
+file(GLOB SOURCES "src/*.cpp")
+set(CMAKE_CXX_FLAGS_DEBUG_INIT "-Wall")
+add_executable(test ${SOURCES})

@@ -2,244 +2,385 @@
 #include <iostream>
 
 LinkedList::LinkedList() {
-    head = NULL;
+    head = nullptr;
+    tail = nullptr;
     size = 0;
 }
+
+void LinkedList::addafter(struct Node** head, struct Node** tail, struct Node** beforeNode, int value) {
+    if (*head == nullptr)
+        throw "cannot insert in empty list";
+
+    Node* newNode = new Node;
+    newNode->value = value;
+    newNode->next = (*beforeNode)->next;
+
+    (*beforeNode)->next = newNode;
+
+    if (*beforeNode == *tail)
+        *tail = newNode;
+
+    ++size;
+}
+
 /**
- * add new node after provided node pointer
+ * DESC: Adds a new node after provided node pointer
+ * TIME: Always O(1)
  */
 void LinkedList::addafter(Node* beforeNode, int value) {
-    if (head != NULL) {
-        // create a new node, set the beforeNode's next to the new node then make beforeNode's next = newNode
-        Node* newNode = new Node; newNode->value = value;
-        newNode->next = beforeNode->next;
-        beforeNode->next = newNode;
-    } else {
-        throw "cannot insert in empty list";
-    }
+    addafter(&head, &tail, &beforeNode, value);
 }
-/**
- * adds new node before provided node
- */
-void LinkedList::addbefore(Node* afterNode, int value) {
-    if (head != NULL) {
-        Node* newNode = new Node; newNode->value = value;
-        Node* n = head; Node* previous = NULL;
-        while (n != NULL) {
-            if (afterNode == n) {
-                if (previous != NULL) previous->next = newNode;
-                newNode->next = n;
-                ++size;
-                break;
-            }
-            previous = n; n = n->next;
+
+
+void LinkedList::addbefore(struct Node** head, struct Node** tail, struct Node** afterNode, int value) {
+    if (*head == nullptr)
+        throw "caonnot insert in empty list";
+
+    Node* newNode = new Node;
+    newNode->value = value;
+
+    Node* walkNode = *head;
+    Node* previous = nullptr;
+
+    while (walkNode != nullptr) {
+        if (*afterNode == walkNode) {
+            newNode->next = *afterNode;
+
+            if (previous != nullptr)
+                previous->next = newNode;
+            else
+                *head = newNode;
+
+            ++size;
+            break;
         }
-    } else {
-        throw "cannot insert in empty list";
+
+        previous = walkNode;
+        walkNode = walkNode->next;
     }
 }
 
 /**
- * returns value at index
- * @param {int} index
- * @return {int} the value at index
+ * DESC: adds new node before provided node
+ * TIME: O(N) in worst case, O(1) in best case
+ */
+void LinkedList::addbefore(Node* afterNode, int value) {
+    addbefore(&head, &tail, &afterNode, value);
+}
+
+/**
+ * DESC: returns value at index
+ * TIME: O(N-1) in worst case, O(1) in best case.
  */
 int LinkedList::valueAt(int index) {
     return getNodeAt(index)->value;
 }
 /**
- * returns true if the list is empty
+ * DESC: returns true if the list is empty
+ * TIME: O(1)
  */
 bool LinkedList::empty() {
     return size == 0;
 }
-/**
- * inserts a new node at provided index.
- */
-void LinkedList::insert(int index, int value) {
-    // because we need to keep the link to the nodes previous,
-    // get the node before the current index, set our insertNode's next to the nodeBefore's
-    // then set nodeBefore's to the insertBefore
-    Node* nodeBefore = getNodeAt(index - 1);
-    Node* insertNode = new Node; insertNode->value = value;
-    insertNode->next = nodeBefore->next;
-    nodeBefore->next = insertNode;
+
+void LinkedList::insert(struct Node** head, struct Node** tail, int index, int value) {
+    if (index >= size || index < 0)
+        throw "Cannot insert a node outside the list bounds";
+
+    Node* insertNode = new Node;
+    insertNode->value = value;
+
+    if (index == 0) { // same logic as popfront.
+        insertNode->next = *head;
+        *head = insertNode;
+    } else { // links before node to insert then insert to nodeBefore's next
+        Node* nodeBefore = getNodeAt(index - 1);
+        insertNode->next = nodeBefore->next;
+        nodeBefore->next = insertNode;
+    }
+
+    if (size == 0)
+        *tail = insertNode;
+
+    ++size;
 }
 /**
- * removes first node with matching value.
+ * DESC: inserts a new node at provided index, and shifts what was at that index and all .
+ * TIME: O(N-1) in worst case, O(1) in best case
  */
-void LinkedList::erase(int value) {
-    if (head != NULL) {
-        Node* n = head; Node* previous = NULL;
-        while (n != NULL) {
-            if (n->value == value) {            // erase when the input value matches
-                if (previous != NULL) {           // if we are not erasing the head node, then linke previous to next
-                    previous->next = n->next;
-                }
-                delete n;
-                --size;
-                break;
-            }
-            previous = n; n = n->next;
-        }
-    } else {
+void LinkedList::insert(int index, int value) {
+    insert(&head, &tail, index, value);
+}
+
+void LinkedList::erase(struct Node** head, struct Node** tail, int value) {
+    if (*head == nullptr)
         throw "this list is empty!";
+
+    Node* walkNode = *head;
+    Node* previous = nullptr;
+
+    while (walkNode != nullptr) {
+        if (walkNode->value == value) {
+            // if we are not erasing the head node, then link previous to next
+            // in that case too, if n is the current tail, set the tail to the previous node
+            // if we are erasing the head node, then set head to n->next
+            if (previous != nullptr) {
+                previous->next = walkNode->next;
+                if (walkNode == *tail)
+                    *tail = previous;
+            } else {
+                *head = walkNode->next;
+            }
+
+            delete walkNode;
+            --size;
+            break;
+        }
+        previous = walkNode;
+        walkNode = walkNode->next;
     }
 }
 
 /**
- * returns true if a node's value equals value in args
+ * DESC: removes first node with matching value.
+ * TIME: O(N) in worst case, O(1) in best case.
+ */
+void LinkedList::erase(int value) {
+    erase(&head, &tail, value);
+}
+
+/**
+ * DESC: returns true if a node's value equals value in args
+ * TIME: O(N) in worst case, O(1) in the best case.
  */
 bool LinkedList::find(int value) {
-    if (head != NULL) {
-        Node* n = head;
-        while (n != NULL) {
-            if (n->value == value) return true;
-            n = n->next;
-        }
-        return false;
-    } else {
+    if (head == nullptr)
         throw "This list is empty";
+
+    Node* n = head;
+    while (n != nullptr) {
+        if (n->value == value)
+            return true;
+        n = n->next;
     }
+    return false;
 }
 /**
- * returns node at provided index
- * @param {int} index
- * @return {Node} node at index
+ * DESC: returns node at provided index
+ * TIME: O(N-1) in best acse, O(1) in best case
  */
 Node* LinkedList::getNodeAt(int index) {
     // do not allow index outside of list bounds.
-    if (index > (size - 1) || index < 0) {
+    if (index >= size || index < 0)
         throw "Provided index outside of list bounds";
-    }
+
+    if (index == 0)
+        return head;
+    else if (index == (size - 1))
+        return tail;
+
     Node* n = head; int counter = 0;
-    while (n != NULL) {
-        if (index == counter) break; // break index==counter means we walked to node at index matching index.
-        n = n->next;               // otherwise we keep walking the list and incrementing until we find the match
+    while (n != nullptr) {
+        if (index == counter)
+            break;
+        n = n->next;
         counter++;
     }
 
-    if (n == NULL) {
-        throw "Corrupted List. Reached non-tail node with next pointer equal to NULL";
-    }
+    if (n == nullptr)
+        throw "Corrupted List. Reached non-tail node with next pointer equal nullptr";
 
     return n;
 }
 
 /**
- * returns the current size of the list
+ * DESC: returns the current size of the list
+ * TIME: O(1)
  */
 int LinkedList::getsize() {
     return size;
 }
 /**
- * get node at
+ * DESC: returns node at provided index.
+ * TIME: O(N-1) in worst case, O(1) in best.
  */
 Node* LinkedList::nodeAt(int index) {
     return getNodeAt(index);
 }
 
+/**
+ * DESC: returns node n nodes away from tail (moving right->left)
+ * TIME: O(N-1) in worst case, O(1) in best case
+ */
 Node* LinkedList::nthNodeFromEnd(int n) {
-    if (n > size) {
-        throw "n is greater than the lenght of the list";
-    } else if (head != NULL) {
-        if (n == size) {
-            return head;
-        }
-        int counter = 0;
-        Node* walkNode = head;
-        while (walkNode != NULL) {
-            if ((size - counter) == n) {
-                return walkNode;
-            }
-            ++counter;
-            walkNode = walkNode->next;
-        }
-    } else {
+    if (head == nullptr)
         throw "cannot get value in an empty list";
+    else if (n > size)
+        throw "n is greater than the lenght of the list";
+
+    // when n is the distance from the tail node, and that is zero, then it is the tail node.
+    if (n == 0)
+        return tail;
+
+    // if n is the farthest node from the tail within the list bounds, then it is the head.
+    int numNodes = size - 1;
+    if (n == numNodes)
+        return head;
+
+    // if neither of these, find the node that has a distance away from the tail == n;
+    // since we already have figured out it is not the head node, we can start looking
+    // 1 node away from the head such that counter is 1.
+    int counter = 1;
+    Node* walkNode = head;
+    while (walkNode != nullptr) {
+        if ((numNodes - counter) == n)
+            break;
+        ++counter;
+        walkNode = walkNode->next;
     }
+    return walkNode;
 }
 /**
- * gets node n from last
+ * DESC: gets the value at node n from last (moving right->left)
+ * TIME: O(N-1) in worst case, O(1) in best case
  */
 int LinkedList::nthValueFromEnd(int n) {
     return nthNodeFromEnd(n)->value;
 }
-/**
- * Adds an element to the end of the list
- */
-void LinkedList::pushback(int value) {
-    Node* newNode = new Node; newNode->value = value;
-    if (head != NULL) {
-        Node* lastNode = getNodeAt(size - 1);
-        lastNode->next = newNode;
-    } else {
-        head = newNode;
-    }
+
+void LinkedList::pushback(struct Node** head, struct Node** tail, int value) {
+    Node* newNode = new Node;
+    newNode->value = value;
+    newNode->next = nullptr;
+
+    if (*head == nullptr)
+        *head = newNode;
+    else
+        (*tail)->next = newNode;
+
+    *tail = newNode;
     ++size;
 }
 /**
- * creates a node with new int value and places it at the front of the list
- * @param {int} value used in the new node placed at the front of the list.
+ * DESC: Adds a node to the end of the list
+ * TIME: O(1)
+ */
+void LinkedList::pushback(int value) {
+    pushback(&head, &tail, value);
+}
+
+void LinkedList::pushfront(struct Node** head, struct Node** tail, int value) {
+    Node* newNode = new Node;
+    newNode->value = value;
+    newNode->next = nullptr;
+
+    if (*head == nullptr)
+        *tail = newNode;
+    else
+        newNode->next = *head;
+
+    *head = newNode;
+    ++size;
+}
+/**
+ * DESC: creates a node at the beginning of the list
+ * TIME: O(1)
  */
 void LinkedList::pushfront(int value) {
-    Node* newNode = new Node; newNode->value = value;
-    if (head != NULL) {
-        newNode->next = head;
-    }
-    head = newNode;
-    ++size;
+    pushfront(&head, &tail, value);
 };
+
 /**
- * reverses order of the list
+ * DESC: reverses order of the list such tail becomes head and head becomes tail and nodes are linked in reverse order
+ * TIME: O(N)
  */
 void LinkedList::reverse() {
     Node* current = head;
-    Node* previous = NULL;
-    Node* next = NULL;
-    while (current != NULL) {
+    Node* previous = nullptr;
+    Node* next = nullptr;
+    int step = 0;
+    // walk the list, flippint the ->next pointers to the previous nodes.
+    // when we are at our first walk, where current is the new head,
+    // flip the is_tail boolean to indicate as much, and then after we've
+    // pointed its next to NULL, set the tail equal to it.
+    while (current != nullptr) {
         next = current->next;
         current->next = previous;
+        if (step == 0)
+            tail = current;
         previous = current;
         current = next;
+        ++step;
     }
     head = previous;
 }
 /**
- * returns the first (the head) element in the list
+ * DESC: Returns the first (the head) node in the list
+ * TIME: O(1)
  */
 int LinkedList::topfront() {
     return head->value;
 }
 /**
- * returns the tail element in the list
- * @returns {int} tail node's value
+ * DESC: returns the tail node's value
+ * TIME: O(1)
  */
 int LinkedList::topback() {
-    return size == 0 ? head->value : getNodeAt(size - 1)->value;
+    return tail->value;
+}
+
+int LinkedList::popback(struct Node** head, struct Node** tail) {
+    if (*head == nullptr)
+        throw "Nothing to remove, this list is currently empty";
+
+    int pop_value = (*tail)->value;
+
+    // if i only have 1 in my list tail needs to end up being null.
+    // so it needs to be a nullptr and when i delete the old tail
+    // i think it will remove what ever was there right?
+    Node* nextTail = size == 1 ? nullptr : getNodeAt(size - 2);
+    Node* prevTail = *tail;
+
+    delete prevTail;
+    *tail = nextTail;
+
+    if (size == 1)
+        *head = *tail;
+
+    --size;
+    return pop_value;
+}
+/**
+ * DESC: returns the value at the end of the list
+ * TIME: O(N-1) in worst case O(1) in best
+ */
+int LinkedList::popback() {
+    return popback(&head, &tail);
+}
+
+int LinkedList::popfront(struct Node** head, struct Node** tail) {
+    if (*head == nullptr)
+        throw "Nothing to remove, this list is currently empty";
+
+    int pop_value = (*head)->value;
+
+    Node* prevHead = *head;
+    *head = size == 1 ? nullptr : (*head)->next;
+
+    if (size <= 2)
+        *tail = *head;
+
+    delete prevHead;
+    --size;
+
+
+    return pop_value;
 }
 
 /**
- * returns the value at the end of the list
+ * DESC: removes the current head.
+ * TIME: O(1)
  */
-void LinkedList::popback() {
-    if (head != NULL) {
-        delete getNodeAt(size - 1);
-        size--;
-    } else {
-        throw "Nothing to remove, this list is currently empty";
-    }
-}
-/**
- * removes the current head.
- */
-void LinkedList::popfront() {
-    if (head != NULL) {
-        Node* nextHead = head->next;
-        delete head;
-        head = nextHead;
-        --size;
-    } else {
-        throw "Nothing to remove, this list is currently empty";
-    }
+int LinkedList::popfront() {
+    return popfront(&head, &tail);
 }

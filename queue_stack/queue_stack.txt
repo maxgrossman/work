@@ -1,0 +1,54 @@
+STACK
+
+Last in First Out
+
+operations
+- push(key) puts key into collection
+- top() gives me what is at top
+- pop() removes and gives me what is at top
+- empty() anything there?
+
+why do we like this?
+- the balanced brackets problem of wanting to know if sets of different brackets are balanced 'for every open bracket there is a closed one'
+    - there are algorithms based on solving for balanced brackets that translate infix notation math into prefix/postfix notation math and execute those math statements
+- if you are crazy and write a compiler, you probably know about stacks.
+
+QUEUES
+
+First in First Out
+
+operations
+- enqueue(key): add key to collection,
+    - this would be a push_back for linked list
+    - insert at write_idx for arrays
+- dequeue(): removes and returns least recenty-added key,
+    - pop_front in linked list
+    - pop at read_idx for arrays
+- empty(): is it emptyy.....
+    - read !== write for list
+linked list implementation
+-             [h][t]
+- enqueue(a), [a][a]
+- enqueue(b), [a]->[b]
+- enqueue(c), [a]->[b]->[c]
+- dequeue(),  ret [a]; [b]->[c]
+
+cost of time is O(1) space is O(n)
+
+array implementation
+-            [][][][][]     read_idx=0,write_idx=0
+- enqueue(a) [a][][][][]    read_idx=0,write_idx=1
+- enqueue(b) [a][b][][][]   read_idx=0,write_idx=2
+- enqueue(c) [a][b][c][][]  read_idx=0,write_idx=3
+- dequeue()  [][b][c][][]   read_idx=1,write_idx=3
+- dequeue()  [][][c][][]    read_idx=2,write_idx=3
+- enqueue(d) [][][c][d][]   read_idx=2,write_idx=4
+- enqueue(e) [][][c][d][e]  read_idx=2,write_idx=0
+- enqueue(f) [f][][c][d][e] read_idx=2,write_idx=1
+- enqueue(g) [f][][c][d][e] ERROR since read and write are same.
+- dequeue    [f][][][d][e]  read_idx=3,write_idx=1
+- dequeue    [f][][][][e]   read_idx=4,write_idx=1
+- dequeue    [f][][][][]    read_idx=0,write_idx=1
+- dequeue    [][][][][]     read_idx=1,write_idx=1
+
+cost of time/space of this implementation are O(1)
