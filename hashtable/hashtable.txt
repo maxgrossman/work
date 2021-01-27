@@ -1,0 +1,158 @@
+MIT COURSEWARE 1
+
+HashTables
+- set of items, each item having a key
+- has api methods...
+  - insert(item): inserts the item (overwritting existing keys)
+    D[key] = val
+  - delete(item): deletes the item
+    delete ... D[key]
+  - search(key): returns item with given key or throw error
+    ... D[key]
+- we can do this in O(1)
+
+Motivations
+- it is fast!
+- modern programming languages
+- databases use then
+- compilers and interpreters
+
+Simple implentation.
+
+Direct Access Table
+
+- array of items where index of the array is the key.
+
+0| null |
+1| null |
+2|item_2|
+3| null |
+4|item_4|
+
+Problem 1
+- keys are not always integers which makes this bad
+Solution
+- map keys to non-negative integers.
+- theoretically, keys are 'finite and discrete', we can turn anything into a string of bits, which is an integer. we mapped key->non-negative integers.
+- in practice this is where you say key = hash(some_thing)
+- however problems occur where hash(some_thing) = hash(some_other_thing)
+  - hopefully this only happens when some_thing=some_other_thing. but that is not true
+  - languages like python don't actually do a hash function, but use the memory address (assuming things never move).
+
+Problem 2
+- a gigantic memory hog.
+Solution
+- hashing. (cut stuff into pieces and move it all around!)
+- reduce all possible keys into a small set of integers.
+
+turn keyspace -> hashtable
+ ____________              _________________
+/ k_a,k_b,k_c \           |_[k_c]->nullptr__|
+| k_d         |->h(key)-> |_[k_a]->[k_d]____|
+|  keyspace   |           |_[k_a]->nullptr__|
+ \___________/
+
+-and ideally we do this where the size of our hashtable is proportional to the number of keys (m=O(n))
+-because keyspace is larger then hashtable, inevitably we'll have a collision...when h(k_a)==h(k_d); we solve this by chaining.
+
+Chaining, to store colliding keys as linked lists.
+Worst case here is hash function points to same linked list, so it is O(N);
+
+Simple Uniform Hashing.
+- each key's equally likely to be hashed to any slot of the table, independent of where other keys are.
+- what is expected lenght of chain for n keys and m slots is n/m, alpha, load factor.
+- so if you can make m roughly be size of keys, our size length of chain is O(1).
+- worst case O(1+length of chain)
+
+
+how do i make my hash function
+(1) division method:
+  h(k) = k % m.
+  can be pretty good if m is prime and far from power 2s and powers 10
+(2) multiplication method:
+  h(k) = [(a*k) mod 2^w] >> (w-r)
+  where w is the w bits.
+  k is w bits long.
+  a is some random integer amongst wbit integers.
+  k*a is 2 words long.
+  then mod 2^w says take right have,
+  then get right most r bits of left most w bits.
+  wher m = 2^
+  ...the complexity here lends to randomizing which like we said is what we want.
+  ...works well when a is odd and kinda far from power of 2
+(3) universal hashing:
+  h(k) = [(ak + b) mod p] mod m
+  a and b are random numbers between 0...p-1
+  where p is a prime number bigger than the size of the universe.
+  worst case keys k1 != k2, probability of h(k1)=h(k2) is 1/m
+  over random a and b.
+
+MIT COURSEWARE 2
+
+i know how to hash, but how do i decide m? I really do not know what n is (that isn't known yet).
+
+in best case I want m=O(n)
+
+idea: start small; m=8, grow and shrink as neccessary.
+
+If m>n, grow my table, meaninging to allocate memory and re-hash, make new hash of size m'.
+  - allocate mem for new one
+  - build that new hash
+  - rehash, for item in old_items: new_hash.insert(item);
+  - O(n+m+m')
+    -m for looking at each slot in old hash
+    -n for looking at every linked list in your table
+    -m' for doing the inserts or making its value nullptr
+ - m' = 2m;
+ - what is the cost of n insertions if we make it 1 bigger?
+   - for every insert i need to rebuild, which is b to the a to th ed.
+ - when we double we get theta n.
+
+Amortization
+- operation takes "T(n) amortized" if k operations take <= k*T(n) time.
+- we spread out the high cost so it is cheap on average. it is T(n) on average.
+
+In this case, table doubling, thati s doing k inserts, it takes O(k) time in total; O(1) amortized/insert.
+
+
+Deletion, how do we handle when we do a bunch of deletes but we just doubled the table size?
+
+(1) if table becomes 1/2 size of m, shrink to m/2. this can lead to linear time (becuase if you are insert/delete at that edge between shrinking in half, you end up spending all your time going back and forth).
+(2) if m= n/4 then shrink -> m/2. only shrink when m = n/4. amortized time -> O(1). n<=m<=4n
+
+String matching:
+- searching for substring in big string.
+- given strings s and t, does s occur as a substring of t?
+- s = '6000', t=my inbox.
+- search substrings of s.length;
+- if anything matches for s=t[i:i+len(s)] for all i in 0->t.length-s.length
+- running time is worst O(s*t).
+- use hashing to make this faster...
+- turn universe of strings size s into hash of strings size s, then look for a collision.
+- what we do here is 'rolling hashes' which gets us ot O(s + t);
+- rolling_hash maintains a string x
+  - rolling_hash.append(c) puts c at end of x
+  - rolling_hash.skip(c) will delete first character of x where c is first of
+  - rolling_hash(): hash value of x.
+  - da karp-raven string matching algorithm
+   for c in s:
+       rs.append(c)
+   for c in t[:len(s)]:
+       rt.append(c)
+   if (rs()==rt() && s == t[:len(s))):
+       return true;
+   for i in range (len(s), len(t)):
+       ht.skip(t[i - len(s)])
+       ht.append(t[i])
+       if (rs()==rt()):
+           if s == t[i-len(s)+1:i+1]:
+               return true;
+  how do we implement the rolling_hash?
+     - gotta have the hash function
+     - h(k) = k mod m
+     - get random prime >= |s|
+     - treat x as multi-digit number u where base is the size of my alphabet, base a`.
+       - append, u -> u * a + number of character in your character set.
+         - r -> r* a + ord(c) mod m
+       - skip, u-> u- c * a**|x|-1
+         - r -> r - c * a**|x|-1
