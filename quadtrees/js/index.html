@@ -1,0 +1,31 @@
+<head>
+    <style>
+        * {font-size: 14px}
+        #main { margin-top: 20px; margin-bottom: 20px; }
+        #search { margin-top: 5px; }
+        .spandiv span { margin-right: 5px; }
+        #pointsintree { margin: 5px 0; }
+        #control { display: flex; }
+    </style>
+</head>
+<body>
+<script src="index.js"></script>
+    <div id="main">
+        <canvas id="canvas"></canvas>
+        <div id="control">
+            <div>
+                <div class='spandiv' id="search"><span>set search distance (degrees) from mouse</span><input type="text" id="searchradius" value='20' /></div>
+                <div id="mouseloc">Mouse location: </div>
+                <div id="qtpoints">There are no quadtree points under this mouse</div>
+                <div id="listpoints">There are no listpoints points under this mouse</div>
+                <div class='spandiv' id="pointsintree"><span>points in tree</span><input type="text" id="numpoints" value='10000' /></div>
+                <div><input type="text" id="numremoves" value='1'/><button id="removepoints">remove</button></div>
+            </div>
+            <div>
+                <button id='zoomin'>zoom in</button>
+                <button id='zoomout'>zoom out</button>
+            </div>
+        </div>
+    </div>
+</body>
+

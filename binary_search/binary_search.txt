@@ -1,0 +1,33 @@
+Binary Search
+- with list of sorted items, make binary decision when searching
+- is this number bigger or smaller? is this higher or lower in the alphabet
+- this has log(N) time
+- remember, we have to keep things sorted all the time.
+
+bin_search (search_term, array_sorted, min, max, compartor)
+    if (max < min)
+        return -1;
+
+    midpoint = (min+max)/2
+    decision = comparator(array[midpoint], search_term)
+
+    if (decision == 1)
+        bin_search(search_term, array, midpoint + 1, max, comparator);
+    else if (decision == -1)
+        bin_search(search_term, array, min, midpoint - 1, comparator);
+    else
+        return midpoint;
+
+- to keep things sorted at all times we can keep a binary search tree, which has three properties
+- left subtree of a node has values that are less than or equal to the node's value
+- right subtree of a node has values that are greater than or equal to a node's value
+- left and right subtrees are binary search trees
+- inorder traveresal, show all on left side, then node, then all on the right
+- adding to the tree by following or 3 principles.
+- deleteing happens too. take child node add add it to the parent of what we want to remove
+- in case when node has 2 children
+  - find the next largest in the tree, swap it with one to delete, then delete it
+- be careful to not make the tree unbalanced
+
+
+if we are nerds about binary search in a sorted list we can state a theorem as it is a satisfactory search algorithm only if we hae a predicate p used over some ordered set for which for all x, p(x) imples p(y) for all y greater than x. or, that if p(x) is true or false then p(y) is true or false, so we can disregard all y greater than x and pick an x less than x to do a search on.
