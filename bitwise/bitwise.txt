@@ -1,0 +1,139 @@
+why do we like bits
+we can store a whole bunch of info using bits that make up words.
+
+bitwise operators
+
+AND   = &
+OR    =  |
+XOR   = ^
+NOT   = ~
+LEFT  = <<
+RIGHT = >>
+
+AND - only true if both input bits are true
+0 & 0 = 0
+1 & 1 = 0
+1 & 1 = 1
+
+1001
+&
+1010
+1000
+
+OR - true if any are true
+
+0 | 0 = 0
+1 | 0 = 1
+
+10010
+|
+01001
+11011
+
+XOR - only true if one and only one is true
+
+0 ^ 0 = 0
+1 ^ 0 = 1
+1 ^ 1 = 0
+
+10010
+10101
+^
+00111
+
+NOT - one's complement operator, flips the input bit
+
+~0 = 1
+~1 = 0
+
+00101
+~
+11010
+
+
+LEFT SHIFT - shift binary strings by n, padding right with zero;
+this is equivalent of multiplying by two
+00010110 = 16+4+2=22 * 2 * 2 = 88
+00000010
+01011000 = 8+16+64 = 88
+
+this succumbs to losing bits because you can shift left most out of word width
+
+RIGHT SHIFT - shift binary by n, padding left with zeros, rounding towards negative infinity (rounding down)
+00010110 = 2+4+16=22 / 2 = 11 / 2 = 5.5
+00000010
+00000101 = 1+4 = 5
+
+
+generally speaking we use shifts for BIT MASKS
+
+what if we want to set one of our bits to true?
+def set_bit(x, pos):
+  mask = 1 << position #
+  return x | mask
+
+x = 00000110
+p = 00000101
+m = 00100000
+x | mask = 00100110
+
+what if we want to clear a bit, set it to zero?
+def clear_bit(x,pos):
+  mask = ~(1 << position)
+  return x & mask
+
+1        = 00000001
+pos      = 00000010
+1 << pos = 00000100
+~(1<<pos)= 11111011
+
+x&mask = 00000110 &
+         11111011
+         00000010
+
+flip a bit, clear or set, depending on what it is.
+i guess not at that position?
+def flip_a_bit(x,pos):
+    mask = 1 << pos
+    return x ^ mask
+
+x     = 01100110
+pos   = 00000010
+mask  = 00000100
+
+x^mask= 01100110
+        00000100
+        01100010
+
+x     = 01100110
+pos   = 00000000
+mask  = 00000001
+
+x^mask= 01100110
+        00000001
+        01100111
+
+is pos in x set to true?
+def is_a_bit_set(x,pos):
+    mask = 1 << pos # padd my left with zeros
+    return x & mask == mask
+
+is 4 set?
+x     =0111
+1     =0001
+pos   =0100
+1<<pos=0100
+mask  =0100
+
+x & mask=0111
+        =0100
+        =0100
+
+complicated
+
+if we move the bit at pos to 0, to where 1 is true, is it true?
+def bit_is_set(x,pos):
+    shifted = x>>position
+    return shifted & 1
+
+
