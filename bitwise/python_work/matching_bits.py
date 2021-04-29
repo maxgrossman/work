@@ -43,3 +43,5 @@ print(matching_bits(1,14))
 print(interleave(7,7)) # 63
 print(interleave(7,2)) # 29
 print(interleave(2,7)) # 46
+print(interleave(6,1)) # 22
+print(interleave(6,2)) # 28
