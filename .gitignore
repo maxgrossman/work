@@ -1,0 +1,10 @@
+
+**/*/cmake_install.cmake
+.vscode
+**/*/CMakeFiles
+**/*/CMakeCache.txt
+**/*/Makefile
+**/*/valgrind-out.txt
+**/*/CMakeLists.txt
+
+trees/test
