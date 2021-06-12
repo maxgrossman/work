@@ -31,8 +31,10 @@ void show_min_max(Node * tree_root);
 
 bool is_in_tree(Node * tree_root, int value);
 Node * search(Node * tree_root, int value);
+
 std::array<Node*,2> search_inorder_predecessor(std::array<Node*, 2>, int value);
 std::array<Node*,2> search_with_parent(std::array<Node*, 2> search_array, int value);
-// is_binary_search_tree
-// delete_value
-// get_successor
+
+bool is_binary_search_tree(Node * root);
+bool is_left_lesser(Node * root, int value);
+bool is_right_greater(Node * root, int value);

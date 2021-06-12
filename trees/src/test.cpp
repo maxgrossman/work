@@ -60,5 +60,17 @@ int main()
     delete_node(search_array, 20);
     assert(is_in_tree(root2, 20) == false);
     assert(root2->right->value == 19);
+    // show we delete 8, which has no children.
+    delete_node(search_array, 8);
+    assert(is_in_tree(root2, 8) == false);
+    // show we delete 18 which now has just one child.
+    delete_node(search_array, 18);
+    assert(is_in_tree(root2, 18) == false);
+    // both trees are binary search trees
+    assert(is_binary_search_tree(root) == true);
+    assert(is_binary_search_tree(root2) == true);
+    // this tree is not a binary search tree
+    root2->left->left = new Node(11);
+    assert(is_binary_search_tree(root2) == false);
     return 0;
 }

@@ -198,3 +198,33 @@ void delete_tree(Node * tree_root) {
 bool is_in_tree(Node * tree_root, int value) {
     return search(tree_root, value) != nullptr;
 }
+
+bool is_left_lesser(Node * root, int value) {
+    if (root == nullptr)
+        return true;
+    if (value < root->value)
+        return false;
+    return is_binary_search_tree(root);
+};
+bool is_right_greater(Node * root, int value) {
+    if (root == nullptr)
+        return true;
+    if (root->value < value)
+        return false;
+    return is_binary_search_tree(root);
+};
+bool is_binary_search_tree(Node * root){
+    return is_left_lesser(root->left, root->value) &&
+           is_right_greater(root->right, root->value);
+}
+/**
+ *       40
+ *     22
+ *   21
+ *     13
+ * 10
+ *     9
+ *   8
+ *     7
+ *       6
+ */
