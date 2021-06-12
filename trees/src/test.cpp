@@ -72,5 +72,7 @@ int main()
     // this tree is not a binary search tree
     root2->left->left = new Node(11);
     assert(is_binary_search_tree(root2) == false);
+    delete_tree(root);
+    delete_tree(root2);
     return 0;
 }
