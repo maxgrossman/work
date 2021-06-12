@@ -217,14 +217,3 @@ bool is_binary_search_tree(Node * root){
     return is_left_lesser(root->left, root->value) &&
            is_right_greater(root->right, root->value);
 }
-/**
- *       40
- *     22
- *   21
- *     13
- * 10
- *     9
- *   8
- *     7
- *       6
- */
