@@ -1,15 +1,15 @@
 #include "../include/heap.h"
 
-void heapify_array(std::vector<int> &unsorted_elements) {
+void max_heapify_array(std::vector<int> &unsorted_elements) {
     int root_index = unsorted_elements.size() / 2 - 2;
     for (; root_index >= 0; --root_index)
-        heapify(unsorted_elements, root_index);
+        max_heapify(unsorted_elements, root_index);
 }
-void heapify_array_optimized(std::vector<int> &unsorted_elements) {
+void max_heapify_array_optimized(std::vector<int> &unsorted_elements) {
     // start with the last node that has a child.
     int root_index = (unsorted_elements.size() - 2) / 2;
     for (; root_index >= 0; --root_index)
-        heapify(unsorted_elements, root_index);
+        max_heapify(unsorted_elements, root_index);
 }
 
 void swap(std::vector<int> &elements, int root_index, int largest) {
@@ -18,7 +18,7 @@ void swap(std::vector<int> &elements, int root_index, int largest) {
     elements[root_index] = temp_largest;
 }
 
-void heapify(std::vector<int> &unsorted_elements, int root_index) {
+void max_heapify(std::vector<int> &unsorted_elements, int root_index) {
     int left_index = 2 * root_index + 1;
     int right_index = 2 * root_index + 2;
     int largest = root_index;
@@ -32,17 +32,17 @@ void heapify(std::vector<int> &unsorted_elements, int root_index) {
     // if the index is not the root, then swap the root with the largest
     if (largest != root_index) {
         swap(unsorted_elements, root_index, largest);
-        heapify(unsorted_elements, largest);
+        max_heapify(unsorted_elements, largest);
     }
 }
 
-void meld(MaxHeap * h1, MaxHeap * h2) {
+void max_meld(MaxHeap * h1, MaxHeap * h2) {
     h1->elements.insert(h1->elements.end(), h2->elements.begin(), h2->elements.end());
-    heapify_array(h1->elements);
+    max_heapify_array(h1->elements);
 }
 
-int find_max(MaxHeap * h) { return h->elements[0]; }
-int find_min_of_max_heap(MaxHeap * h) {
+int max_find_max(MaxHeap * h) { return h->elements[0]; }
+int max_find_min(MaxHeap * h) {
     int min = h->elements[0];
     for (const int element: h->elements) {
         if (element < min)
@@ -50,19 +50,19 @@ int find_min_of_max_heap(MaxHeap * h) {
     }
     return min;
 }
-void delete_max(MaxHeap * h) {
+void max_delete_max(MaxHeap * h) {
     // swap with smallest and delete
     swap(h->elements, 0, h->elements.size() - 1);
     h->elements.pop_back();
-    // re-heapify the heap
-    heapify(h->elements, 0);
+    // re-max_heapify the heap
+    max_heapify(h->elements, 0);
 }
-int extract_max(MaxHeap * h) {
+int max_extract_max(MaxHeap * h) {
     int max = h->elements[0];
-    delete_max(h);
+    max_delete_max(h);
     return max;
 }
-void replace_max(MaxHeap * h, int value) {
+void max_replace_max(MaxHeap * h, int value) {
     h->elements[0] = value;
-    heapify(h->elements, 0);
+    max_heapify(h->elements, 0);
 }
