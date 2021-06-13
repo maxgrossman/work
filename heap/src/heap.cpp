@@ -36,13 +36,13 @@ void heapify(std::vector<int> &unsorted_elements, int root_index) {
     }
 }
 
-void meld(Heap * h1, Heap * h2) {
+void meld(MaxHeap * h1, MaxHeap * h2) {
     h1->elements.insert(h1->elements.end(), h2->elements.begin(), h2->elements.end());
     heapify_array(h1->elements);
 }
 
-int find_max(Heap * h) { return h->elements[0]; }
-int find_min_of_max_heap(Heap * h) {
+int find_max(MaxHeap * h) { return h->elements[0]; }
+int find_min_of_max_heap(MaxHeap * h) {
     int min = h->elements[0];
     for (const int element: h->elements) {
         if (element < min)
@@ -50,19 +50,19 @@ int find_min_of_max_heap(Heap * h) {
     }
     return min;
 }
-void delete_max(Heap * h) {
+void delete_max(MaxHeap * h) {
     // swap with smallest and delete
     swap(h->elements, 0, h->elements.size() - 1);
     h->elements.pop_back();
     // re-heapify the heap
     heapify(h->elements, 0);
 }
-int extract_max(Heap * h) {
+int extract_max(MaxHeap * h) {
     int max = h->elements[0];
     delete_max(h);
     return max;
 }
-void replace_max(Heap * h, int value) {
+void replace_max(MaxHeap * h, int value) {
     h->elements[0] = value;
     heapify(h->elements, 0);
 }

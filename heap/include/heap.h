@@ -7,20 +7,20 @@ void heapify_array(std::vector<int> &unsorted_elements);
 //https://www.geeksforgeeks.org/building-heap-from-array/
 void heapify_array_optimized(std::vector<int> &unsorted_elements);
 
-struct Heap {
+struct MaxHeap {
     std::vector<int> elements;
-    explicit Heap(std::vector<int> &unsorted_elements) {
+    explicit MaxHeap(std::vector<int> &unsorted_elements) {
         heapify_array(unsorted_elements);
         this->elements = unsorted_elements;
     }
-    ~Heap() { this->elements.clear(); }
+    ~MaxHeap() { this->elements.clear(); }
 };
 
-int find_max(Heap * h);
-int find_min_of_max_heap(Heap * h);
-int extract_max(Heap * h);
-void delete_max(Heap * h);
-void replace_max(Heap * h, int value);
+int find_max(MaxHeap * h);
+int find_min_of_max_heap(MaxHeap * h);
+int extract_max(MaxHeap * h);
+void delete_max(MaxHeap * h);
+void replace_max(MaxHeap * h, int value);
 
 // melds two heaps into heap passed as first parameter
-void meld(Heap * h1, Heap * h2);
+void meld(MaxHeap * h1, MaxHeap * h2);
